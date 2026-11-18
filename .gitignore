@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 inventory.json
 order_history.json
+warehouse.db

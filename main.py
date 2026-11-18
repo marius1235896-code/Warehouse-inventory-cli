@@ -1,6 +1,7 @@
 from datetime import datetime
 from storage import save_products, load_products, save_order_history, load_order_history
 from services import find_product_by_sku, process_order, create_product, delete_product
+from database import create_database, save_products_to_database, load_products_from_database
 
 
 def show_inventory(products):
@@ -26,7 +27,14 @@ def show_menu():
     print("7 - Exit")
 
 
-products = load_products()
+create_database()
+
+products = load_products_from_database()
+if not products:
+    products = load_products()
+    save_products_to_database(products)
+
+save_products_to_database(products)
 order_history = load_order_history()
 
 
@@ -69,7 +77,7 @@ while choice != "7":
                 break
             except ValueError:
                 print("Quantity must be a whole number")
-        save_products(products)
+        save_products_to_database(products)
 
     elif choice == "4":
         new_sku = input("Enter new product SKU: ")
@@ -84,12 +92,12 @@ while choice != "7":
 
         create_product(products, new_sku, new_name,
                        new_quantity, new_minimum_stock)
-        save_products(products)
+        save_products_to_database(products)
     elif choice == "5":
         sku_to_delete = input("Enter product SKU: ")
 
         delete_product(products, sku_to_delete)
-        save_products(products)
+        save_products_to_database(products)
     elif choice == "6":
         show_order_history(order_history)
     elif choice == "7":
@@ -98,4 +106,4 @@ while choice != "7":
     else:
         print("Wrong choice!")
 
-save_products(products)
+save_products_to_database(products)
